@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# Get a good tempdir. Aww yis.
+if [ "$TMPDIR" = "" ]; then
+	TMPDIR=$(mktemp -d)
+fi
+
+# Helpers/vars
+TMP="$TMPDIR/asdf-r2-$USER"
+VER="$ASDF_INSTALL_VERSION"
+DEST="$ASDF_INSTALL_PATH"
+
+MAKE=make
+gmake --help 2>&1 > /dev/null && MAKE=gmake
+
+run() {
+	echo "$ $@"
+	"$@" || exit 1
+}
+
+# Version selection and downloading
+[ "$VER" = "git" ] && VER=master
+if echo "$VER" | grep -q "^git-"; then
+	VER=$(echo "$VER" | sed 's/^git-//')
+fi
+
+run git clone https://github.com/radare/radare2 --depth=1 --branch="$VER" "$TMP"
+
+# Building
+cd "$TMP"
+{
+	run ./configure --prefix="$DEST"
+	run $MAKE -j$ASDF_CONCURRENCY
+	run $MAKE install
+}
+run rm -rf "$TMP"
