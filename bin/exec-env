@@ -9,4 +9,6 @@ export \
 	PKG_CONFIG_PATH="$LDIR/pkgconfig:$PKG_CONFIG_PATH" \
 	R2PM_PLUGDIR="$LDIR/radare2/last" \
 	R2PM_BINDIR="$BDIR" \
-	R2PM_DBDIR="$DIR/r2pm"
+	R2PM_DBDIR="$DIR/r2pm/db" \
+	R2PM_GITDIR="$DIR/r2pm/git" \
+	R2PM_USRDIR="$DIR/r2pm"
