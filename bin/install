@@ -1,4 +1,5 @@
 #!/bin/sh
+# Install things. Yay.
 
 # Get a good tempdir. Aww yis.
 if [ "$TMPDIR" = "" ]; then
@@ -10,8 +11,10 @@ TMP="$TMPDIR/asdf-r2-$USER"
 VER="$ASDF_INSTALL_VERSION"
 DEST="$ASDF_INSTALL_PATH"
 
+# We need GNU Make, not BSD Make.
 MAKE=make
-gmake --help 2>&1 > /dev/null && MAKE=gmake
+command -v gmake >/dev/null && MAKE=gmake
+export MAKE
 
 run() {
 	echo "$ $@"
@@ -19,12 +22,22 @@ run() {
 }
 
 # Version selection and downloading
-[ "$VER" = "git" ] && VER=master
-if echo "$VER" | grep -q "^git-"; then
-	VER=$(echo "$VER" | sed 's/^git-//')
+GIT=https://github.com
+USERNAME=radare
+
+[ "$VER" = "git" ] && BRANCH=master
+echo "# Building $VER"
+if echo "$VER" | grep -q "@" ; then # select different username, ie fork
+	echo "# Building $USERNAME's radare2 fork."
+	USERNAME=$(echo "$VER" | sed 's/@.*$//')
+	BRANCH=$(echo "$VER" | sed 's/^.*@//')
 fi
 
-run git clone https://github.com/radare/radare2 --depth=1 --branch="$VER" "$TMP"
+if echo "$VER" | grep -q "^git-" ; then
+	BRANCH=$(echo "$VER" | sed 's/^git-//')
+fi
+
+run git clone "$GIT/$USERNAME/radare2" --depth=1 --branch="$BRANCH" "$TMP"
 
 # Building
 cd "$TMP"
