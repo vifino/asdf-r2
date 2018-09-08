@@ -15,4 +15,4 @@ echo \
 	2.8.0 \
 	2.9.0 \
 	git \
-	condret:esil_interrupts
+	condret@esil_talk

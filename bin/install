@@ -28,9 +28,9 @@ USERNAME=radare
 [ "$VER" = "git" ] && BRANCH=master
 echo "# Building $VER"
 if echo "$VER" | grep -q "@" ; then # select different username, ie fork
-	echo "# Building $USERNAME's radare2 fork."
-	USERNAME=$(echo "$VER" | sed 's/@.*$//')
+	USERNAME=$(echo "$VER" | sed 's/@.*$//')	
 	BRANCH=$(echo "$VER" | sed 's/^.*@//')
+	echo "# Building $USERNAME's radare2 fork on branch $BRANCH."
 fi
 
 if echo "$VER" | grep -q "^git-" ; then
